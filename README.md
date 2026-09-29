@@ -5,6 +5,25 @@
 [![Chat](https://img.shields.io/discord/596350022191415318)](http://discord.gg/dS6ReFY)
 [![Open Collective backers](https://img.shields.io/opencollective/backers/expresslrs?label=Open%20Collective%20backers)](https://opencollective.com/expresslrs)
 
+## About this branch (`graphn-hdz-bkpk`)
+
+This branch tracks upstream `master` and adds one change on top, specific to
+the HDZero goggles VRX backpack:
+
+- **Broadcast VRx-initiated channel changes over ESP-NOW.** When the goggles
+  send `MSP_ELRS_BACKPACK_SET_CHANNEL_INDEX` (0x0301) up the UART — e.g.
+  HDZero's "Send VTX" / channel-follow feature — the VRX backpack used to
+  silently drop it. This is now forwarded over ESP-NOW as `MSP_SET_VTX_CONFIG`
+  (89), the opcode peers already act on over the air: other VRX backpacks in
+  the bind group retune their goggles, and TX backpacks pass it on to the
+  handset, so VTX admin follows whatever channel the goggles are set to.
+
+  Guarded to command packets with a valid 48-entry table index. No echo risk:
+  the goggles send no response to 0x0301, the sender doesn't receive its own
+  ESP-NOW broadcast, and receivers dedupe an unchanged channel.
+
+See `src/module_base.cpp` for the implementation.
+
 The ExpressLRS Backpack adds ESP-NOW–based wireless communication between ExpressLRS TX modules and compatible FPV hardware, allowing for remote configuration, control, and telemetry exchange. Developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
 
 ExpressLRS Backpack is developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
