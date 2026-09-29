@@ -34,6 +34,11 @@ Scope: only `src/rapidfire.h`, `src/rapidfire.cpp`, `src/Vrx_main.cpp` and
 upstream. This target has no telemetry (GPS/battery/link), OSD,
 head-tracking or RTC support — only band/channel switching, gated as above.
 
+**Build scope:** `platformio.ini` only includes `targets/rapidfire.ini` on
+this branch, so `pio run` builds/lists just the Rapidfire VRX environments.
+Other vendors' `targets/*.ini` and `src/*.cpp` files are untouched on disk
+(not deleted) so future `upstream/master` merges stay simple.
+
 The ExpressLRS Backpack adds ESP-NOW–based wireless communication between ExpressLRS TX modules and compatible FPV hardware, allowing for remote configuration, control, and telemetry exchange. Developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
 
 ExpressLRS Backpack is developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
