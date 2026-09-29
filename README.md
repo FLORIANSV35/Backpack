@@ -24,6 +24,11 @@ the HDZero goggles VRX backpack:
 
 See `src/module_base.cpp` for the implementation.
 
+**Build scope:** `platformio.ini` only includes `targets/hdzero.ini` on this
+branch, so `pio run` builds/lists just the HDZero VRX environments. Other
+vendors' `targets/*.ini` and `src/*.cpp` files are untouched on disk (not
+deleted) so future `upstream/master` merges stay simple.
+
 The ExpressLRS Backpack adds ESP-NOW–based wireless communication between ExpressLRS TX modules and compatible FPV hardware, allowing for remote configuration, control, and telemetry exchange. Developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
 
 ExpressLRS Backpack is developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
