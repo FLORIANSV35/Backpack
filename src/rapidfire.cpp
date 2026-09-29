@@ -64,8 +64,17 @@ Rapidfire::SendIndexCmd(uint8_t index)
     uint8_t newBand = index / 8 + 1;
     uint8_t newChannel = index % 8;
 
-    SendBandCmd(newBand);
-	delay(100);
+    // The rapidFIRE beeps once per accepted band-set AND once per
+    // accepted channel-set command. SendIndexCmd used to send both
+    // unconditionally on every change, so staying inside the same band
+    // (the common case) gave 2 beeps instead of 1. Only resend the band
+    // when it actually changes.
+    if (newBand != lastBand)
+    {
+        SendBandCmd(newBand);
+        delay(100);
+        lastBand = newBand;
+    }
     SendChannelCmd(newChannel);
 }
 
@@ -159,8 +168,24 @@ Rapidfire::SendBandCmd(uint8_t band)
 }
 
 void
+Rapidfire::SetRecordingState(uint8_t recordingState, uint16_t delay)
+{
+    // In this setup, recording is tied to the arm switch: state != 0 means armed.
+    armed = (recordingState != 0);
+
+    DBG("Rapidfire armed state = ");
+    DBGLN("%x", armed);
+}
+
+void
 Rapidfire::SendSPI(uint8_t* buf, uint8_t bufLen)
 {
+    if (armed)
+    {
+        DBGLN("Rapidfire: armed, ignoring SPI command");
+        return;
+    }
+
     if (!SPIModeEnabled) EnableSPIMode();
 
     uint32_t periodMicroSec = 1000000 / BIT_BANG_FREQ;

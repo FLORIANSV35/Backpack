@@ -7,6 +7,7 @@
   #include <esp_now.h>
   #include <esp_wifi.h>
   #include <WiFi.h>
+  #include <esp_idf_version.h>
 #endif
 
 
@@ -74,6 +75,11 @@ bool sendRTCChangesToVrx = false;
 bool gotInitialPacket = false;
 bool headTrackingEnabled = false;
 uint32_t lastSentRequest = 0;
+
+// Mirrors the arm switch (tied to recording state in this setup). Gates
+// ALL outbound ESPNOW traffic from this backpack, not just SPI - see
+// sendMSPViaEspnow() below.
+bool armed = false;
 
 device_t *ui_devices[] = {
 #ifdef PIN_LED
@@ -145,12 +151,19 @@ void RebootIntoWifi(wifi_service_t service = WIFI_SERVICE_UPDATE)
 }
 
 // espnow on-receive callback
+// arduino-esp32 core >= 3.x (IDF5) changed the esp_now_recv_cb_t signature
+// from (mac_addr, data, len) to (esp_now_recv_info_t*, data, len).
 #if defined(PLATFORM_ESP8266)
 void OnDataRecv(uint8_t * mac_addr, uint8_t *data, uint8_t data_len)
+#elif defined(PLATFORM_ESP32) && ESP_IDF_VERSION_MAJOR >= 5
+void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *data, int data_len)
 #elif defined(PLATFORM_ESP32)
 void OnDataRecv(const uint8_t * mac_addr, const uint8_t *data, int data_len)
 #endif
 {
+#if defined(PLATFORM_ESP32) && ESP_IDF_VERSION_MAJOR >= 5
+  const uint8_t *mac_addr = recv_info->src_addr;
+#endif
   MSP recv_msp;
   DBGVLN("ESP NOW DATA:");
   for(int i = 0; i < data_len; i++)
@@ -238,6 +251,7 @@ void ProcessMSPPacket(mspPacket_t *packet)
       uint8_t lowByte = packet->readByte();
       uint8_t highByte = packet->readByte();
       uint16_t delay = lowByte | highByte << 8;
+      armed = (state != 0); // this setup: recording state == armed state
       vrxModule.SetRecordingState(state, delay);
     }
     break;
@@ -357,6 +371,12 @@ void sendMSPViaEspnow(mspPacket_t *packet)
 {
   // Do not send while in binding mode.  The currently used firmwareOptions.uid may be garbage.
   if (connectionState == binding)
+    return;
+
+  // Stay RF-silent while armed: no ESPNOW transmissions at all, not just
+  // SPI. This is the single choke point every outbound packet goes
+  // through (RequestVTXPacket, head-tracking forwarding, etc.).
+  if (armed)
     return;
 
   uint8_t packetSize = msp.getTotalPacketSize(packet);

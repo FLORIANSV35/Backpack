@@ -5,7 +5,7 @@
 #include "device.h"
 #include "msptypes.h"
 #include "logging.h"
-#include <config.h>
+#include "config.h"
 
 #if defined(HAS_HEADTRACKING)
 #include "devHeadTracker.h"

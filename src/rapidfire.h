@@ -22,10 +22,13 @@ public:
     void SendIndexCmd(uint8_t index);
     void SendChannelCmd(uint8_t channel);
     void SendBandCmd(uint8_t band);
+    void SetRecordingState(uint8_t recordingState, uint16_t delay);
 
 private:
     void SendSPI(uint8_t* buf, uint8_t bufLen);
     void EnableSPIMode();
     uint8_t crc8(uint8_t* buf, uint8_t bufLen);
     bool SPIModeEnabled = false;
+    bool armed = false;
+    uint8_t lastBand = 0; // 0 = not sent yet, forces the first band cmd
 };
