@@ -39,6 +39,12 @@ this branch, so `pio run` builds/lists just the Rapidfire VRX environments.
 Other vendors' `targets/*.ini` and `src/*.cpp` files are untouched on disk
 (not deleted) so future `upstream/master` merges stay simple.
 
+**Configurator scope:** `hardware/targets.json` only lists the `rapidfire`
+vendor on this branch — that's what a Configurator pointed at this fork will
+show. Every other vendor was removed from this file; their `targets/*.ini`
+environments still exist and still build, they're just not in the device
+picker.
+
 The ExpressLRS Backpack adds ESP-NOW–based wireless communication between ExpressLRS TX modules and compatible FPV hardware, allowing for remote configuration, control, and telemetry exchange. Developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
 
 ExpressLRS Backpack is developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
