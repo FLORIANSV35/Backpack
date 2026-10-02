@@ -36,6 +36,15 @@ HDZero RX51 VRX module (`hdzero-vrx`) and every other vendor were removed
 from this file; their `targets/*.ini` environments still exist and still
 build, they're just not in the device picker.
 
+**Firmware version:** `python/elrs_helpers.py` reports a fixed version,
+`1.5.9-graphn`, instead of deriving it from `git describe`/branch name. The
+stock logic falls back to a placeholder (`ver.unknown`, shown mangled as
+`ver:ver:unknown` on the goggles OSD) whenever the build environment has no
+access to the full git history/tags — which a plain branch build hits,
+unlike an official tagged release. `1.5.9` is the official ExpressLRS
+Backpack release this branch is based on (`upstream/master` as of the merge,
+10 commits past tag `1.5.9`).
+
 The ExpressLRS Backpack adds ESP-NOW–based wireless communication between ExpressLRS TX modules and compatible FPV hardware, allowing for remote configuration, control, and telemetry exchange. Developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
 
 ExpressLRS Backpack is developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
