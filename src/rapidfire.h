@@ -30,5 +30,6 @@ private:
     uint8_t crc8(uint8_t* buf, uint8_t bufLen);
     bool SPIModeEnabled = false;
     bool armed = false;
+    uint8_t lastIndex = 0xFF; // 0xFF = nothing sent yet, forces the first cmd
     uint8_t lastBand = 0; // 0 = not sent yet, forces the first band cmd
 };

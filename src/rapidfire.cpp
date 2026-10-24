@@ -61,6 +61,20 @@ Rapidfire::SendBuzzerCmd()
 void
 Rapidfire::SendIndexCmd(uint8_t index)
 {
+    // Nothing to do while armed (SendSPI would drop it anyway). Do NOT
+    // record the index/band as sent, so a real change made during flight
+    // is still applied after disarm.
+    if (armed)
+        return;
+
+    // Same channel as the last one actually sent to the rapidFIRE: stay
+    // silent. The TX re-sends MSP_SET_VTX_CONFIG on events such as disarm.
+    if (index == lastIndex)
+    {
+        DBGLN("Rapidfire: same channel as before, nothing to send");
+        return;
+    }
+
     uint8_t newBand = index / 8 + 1;
     uint8_t newChannel = index % 8;
 
@@ -76,6 +90,7 @@ Rapidfire::SendIndexCmd(uint8_t index)
         lastBand = newBand;
     }
     SendChannelCmd(newChannel);
+    lastIndex = index;
 }
 
 void
