@@ -117,6 +117,15 @@ void ProcessMSPPacketFromPeer(mspPacket_t *packet)
   }
 
   switch (packet->function) {
+    case MSP_ELRS_REQU_VTX_PKT: {
+      DBGLN("MSP_ELRS_REQU_VTX_PKT...");
+      // request from a vrx-backpack to send the cached VTX packet
+      if (cacheFull)
+      {
+        sendMSPViaEspnow(&cachedVTXPacket);
+      }
+      break;
+    }
     case MSP_ELRS_BACKPACK_SET_RECORDING_STATE: {
         mspPacket_t out;
         out.reset();
@@ -298,6 +307,13 @@ void ProcessMSPPacketFromTimer(mspPacket_t *packet, uint32_t now)
       #endif
       break;
     }
+  case MSP_SET_VTX_CONFIG:
+    DBGLN("Processing MSP_SET_VTX_CONFIG...");
+    // cache so that VRX backpacks joining later can request it
+    cachedVTXPacket = *packet;
+    cacheFull = true;
+    sendMSPViaEspnow(packet);
+    break;
   default:
     // transparently forward MSP packets via espnow to any subscribers
     sendMSPViaEspnow(packet);
