@@ -117,6 +117,12 @@ void ProcessMSPPacketFromPeer(mspPacket_t *packet)
   }
 
   switch (packet->function) {
+    case MSP_SET_VTX_CONFIG: {
+      DBGLN("MSP_SET_VTX_CONFIG...");
+      // channel change sent by the radio (via the TX backpack), pass it on to the timer
+      msp.sendPacket(packet, &Serial);
+      break;
+    }
     case MSP_ELRS_BACKPACK_SET_RECORDING_STATE: {
         mspPacket_t out;
         out.reset();
@@ -167,7 +173,7 @@ void OnDataRecv(const uint8_t * mac_addr, const uint8_t *data, int data_len)
           )
       {
         #if defined(PLATFORM_ESP8266)
-          ProcessMSPPacketFromTimer(recv_msp.getReceivedPacket(), millis());
+          ProcessMSPPacketFromPeer(recv_msp.getReceivedPacket());
         #elif defined(PLATFORM_ESP32)
           xQueueSend(rxqueue, recv_msp.getReceivedPacket(), (TickType_t)1024);
         #endif
