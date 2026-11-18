@@ -412,6 +412,10 @@ void setup()
     Serial1.setDebugOutput(true);
   #endif
   Serial.begin(460800);
+  #if defined(ARDUINO_USB_CDC_ON_BOOT) && ARDUINO_USB_CDC_ON_BOOT
+    // Native USB CDC: never block on writes when no host is listening
+    Serial.setTxTimeoutMs(0);
+  #endif
 
   options_init();
 
