@@ -5,6 +5,28 @@
 [![Chat](https://img.shields.io/discord/596350022191415318)](http://discord.gg/dS6ReFY)
 [![Open Collective backers](https://img.shields.io/opencollective/backers/expresslrs?label=Open%20Collective%20backers)](https://opencollective.com/expresslrs)
 
+## About this branch (`graphn-radio-bkpk-lr`)
+
+Branched from [graphn-radio-bkpk](https://github.com/FLORIANSV35/Backpack/tree/graphn-radio-bkpk),
+adding one change: ESP-NOW frames are forced to WiFi LR (long range) PHY via
+`esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K)` in
+`setup()` (`src/Tx_main.cpp`), on top of `WIFI_PROTOCOL_LR` already being
+advertised on the interface.
+
+**Every device in the bind group must run an `-lr` branch build for this to
+work** — LR is a different PHY modulation, not just a slower rate, so a
+normal-rate peer can't decode LR frames at all (and vice versa). Pairs with
+[graphn-hdz-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-hdz-bkpk-lr)
+and
+[graphn-rapidf-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-rapidf-bkpk-lr).
+
+**Binding caveat:** the rate is forced for the whole ESP-NOW interface, not
+per-peer, which also covers the `bindingInfo` peer used to pair a brand-new
+VRX backpack. A backpack that hasn't been flashed with a matching `-lr`
+build yet can't be bound from this radio while this is in effect — flash it
+with the `-lr` firmware first (or temporarily reflash this radio with plain
+`graphn-radio-bkpk` to do the initial bind, then switch back).
+
 ## About this branch (`graphn-radio-bkpk`)
 
 This branch tracks upstream `master` with no code changes yet, scoped down
