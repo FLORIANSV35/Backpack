@@ -5,6 +5,31 @@
 [![Chat](https://img.shields.io/discord/596350022191415318)](http://discord.gg/dS6ReFY)
 [![Open Collective backers](https://img.shields.io/opencollective/backers/expresslrs?label=Open%20Collective%20backers)](https://opencollective.com/expresslrs)
 
+## About this branch (`graphn-radio-bkpk`)
+
+This branch tracks upstream `master` with no code changes yet, scoped down
+to a single radio: the **RadioMaster GX12** (ESP32-C3 internal TX module,
+firmware `ESP32C3_TX_Backpack`).
+
+**Build scope:** `platformio.ini` only includes `targets/txbp_esp.ini` on
+this branch, so `pio run` builds/lists just the TX backpack environments
+(`ESP_TX_Backpack_*` for ESP8285 radios and `ESP32C3_TX_Backpack_*` for the
+GX12 and other ESP32-C3 radios — both families live in the same `.ini`
+file). Other vendors' `targets/*.ini` and `src/*.cpp` files are untouched on
+disk (not deleted) so future `upstream/master` merges stay simple.
+
+**Configurator scope:** `hardware/targets.json` only lists the
+`radiomaster` vendor, and only its `gx12` entry, on this branch — that's
+what a Configurator pointed at this fork will show. Every other
+vendor/product was removed from this file; their `targets/*.ini`
+environments still exist and still build, they're just not in the device
+picker.
+
+**Firmware version:** `python/elrs_helpers.py` reports a fixed version,
+`1.5.9-graphn`, instead of deriving it from `git describe`/branch name —
+see [graphn-hdz-bkpk](https://github.com/FLORIANSV35/Backpack/tree/graphn-hdz-bkpk)
+for why.
+
 The ExpressLRS Backpack adds ESP-NOW–based wireless communication between ExpressLRS TX modules and compatible FPV hardware, allowing for remote configuration, control, and telemetry exchange. Developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
 
 ExpressLRS Backpack is developed and maintained by **ExpressLRS LLC** and its passionate open source community, working together to advance reliable, high-performance radio control technology.
