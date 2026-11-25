@@ -54,6 +54,7 @@ TxBackpackConfig::SetDefaults()
     m_config.wifiService = WIFI_SERVICE_UPDATE;
     m_config.mavlinkListenPort = 14555;  // Default MavLink listen port
     m_config.mavlinkSendPort = 14550;    // Default MavLink send port
+    m_config.espnowLR = true; // this is the -lr branch, default to LR on
     m_modified = true;
     Commit();
 }
@@ -110,6 +111,13 @@ void
 TxBackpackConfig::SetMavlinkSendPort(uint16_t port)
 {
     m_config.mavlinkSendPort = port;
+    m_modified = true;
+}
+
+void
+TxBackpackConfig::SetEspnowLR(bool lr)
+{
+    m_config.espnowLR = lr;
     m_modified = true;
 }
 #endif

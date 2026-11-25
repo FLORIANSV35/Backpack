@@ -7,7 +7,7 @@
 #define VRX_BACKPACK_CONFIG_MAGIC   (0b10U << 30)
 #define TIMER_BACKPACK_CONFIG_MAGIC (0b11U << 30)
 
-#define TX_BACKPACK_CONFIG_VERSION      4
+#define TX_BACKPACK_CONFIG_VERSION      5
 #define VRX_BACKPACK_CONFIG_VERSION     5
 #define TIMER_BACKPACK_CONFIG_VERSION   3
 
@@ -36,6 +36,7 @@ typedef struct {
     telem_mode_t      telemMode;
     uint16_t          mavlinkListenPort;
     uint16_t          mavlinkSendPort;
+    bool              espnowLR; // force the ESP-NOW PHY rate to WiFi LR (long range)
 } tx_backpack_config_t;
 
 class TxBackpackConfig
@@ -54,6 +55,7 @@ public:
     telem_mode_t GetTelemMode() { return m_config.telemMode; }
     uint16_t GetMavlinkListenPort() const { return m_config.mavlinkListenPort; }
     uint16_t GetMavlinkSendPort() const { return m_config.mavlinkSendPort; }
+    bool     GetEspnowLR() { return m_config.espnowLR; }
 
     // Setters
     void SetStorageProvider(ELRS_EEPROM *eeprom);
@@ -66,6 +68,7 @@ public:
     void SetTelemMode(telem_mode_t mode);
     void SetMavlinkListenPort(uint16_t port);
     void SetMavlinkSendPort(uint16_t port);
+    void SetEspnowLR(bool lr);
 
 private:
     tx_backpack_config_t    m_config;

@@ -23,9 +23,14 @@ and
 **Binding caveat:** the rate is forced for the whole ESP-NOW interface, not
 per-peer, which also covers the `bindingInfo` peer used to pair a brand-new
 VRX backpack. A backpack that hasn't been flashed with a matching `-lr`
-build yet can't be bound from this radio while this is in effect — flash it
-with the `-lr` firmware first (or temporarily reflash this radio with plain
-`graphn-radio-bkpk` to do the initial bind, then switch back).
+build yet can't be bound from this radio while this is in effect.
+
+**Togglable from the web UI**, not just hardcoded: LR defaults to on (this
+is the `-lr` branch), but is stored in EEPROM (`TxBackpackConfig::espnowLR`,
+bumped `TX_BACKPACK_CONFIG_VERSION` to 5) and exposed as a checkbox on the
+*Network* tab (`POST /setespnowlr`, restarts to apply). Use it to flip LR
+off temporarily to do the initial bind of a new backpack, then back on —
+no need to reflash a different branch for that anymore.
 
 ## About this branch (`graphn-radio-bkpk`)
 
