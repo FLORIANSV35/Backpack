@@ -25,6 +25,14 @@ and
 WiFi LR requires ESP32-family hardware (ESP32, ESP32-C3, ...) — it does not
 exist on ESP8266/ESP8285 at all (no SDK API, no hardware support).
 
+**Togglable from the web UI**, not just hardcoded: LR defaults to on (this
+is the `-lr` branch), but is stored in EEPROM (`VrxBackpackConfig::espnowLR`,
+bumped `VRX_BACKPACK_CONFIG_VERSION` to 6) and exposed as a checkbox on the
+*Network* tab (`POST /setespnowlr`, restarts to apply). Useful to
+temporarily switch a single backpack back to normal rate — e.g. to bind a
+new VRX backpack that isn't flashed with an `-lr` build yet — without
+reflashing a different branch.
+
 ## About this branch (`graphn-hdz-bkpk`)
 
 This branch tracks upstream `master` and adds one change on top, specific to
