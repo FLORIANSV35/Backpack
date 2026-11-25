@@ -5,6 +5,29 @@
 [![Chat](https://img.shields.io/discord/596350022191415318)](http://discord.gg/dS6ReFY)
 [![Open Collective backers](https://img.shields.io/opencollective/backers/expresslrs?label=Open%20Collective%20backers)](https://opencollective.com/expresslrs)
 
+## About this branch (`graphn-rapidf-bkpk-lr`)
+
+Branched from [graphn-rapidf-bkpk](https://github.com/FLORIANSV35/Backpack/tree/graphn-rapidf-bkpk),
+adding one change: ESP-NOW frames are forced to WiFi LR (long range) PHY via
+`esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K)` in
+`SetupEspNow()` (`src/Vrx_main.cpp`), on top of `WIFI_PROTOCOL_LR` already
+being advertised on the interface.
+
+This only applies to the `Rapidfire_ESP32C3_Backpack` target (the code sits
+inside `#elif defined(PLATFORM_ESP32)`, which the ESP32-C3 build defines).
+The stock ESP8266/ESP8285 targets (`rx`, `esp01f`, `esp12f`, `ep82`) are
+unaffected and still build — but they have no WiFi LR capability at all, so
+they can never join an LR bind group regardless of this branch.
+
+**Every device in the bind group must run an `-lr` branch build for this to
+work** — LR is a different PHY modulation, not just a slower rate, so a
+normal-rate peer can't decode LR frames at all (and vice versa). The
+`Rapidfire_ESP32C3_Backpack` from this branch will stop being able to talk
+to anything still on plain `graphn-rapidf-bkpk`. Pairs with
+[graphn-hdz-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-hdz-bkpk-lr)
+and
+[graphn-radio-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-radio-bkpk-lr).
+
 ## About this branch (`graphn-rapidf-bkpk`)
 
 This branch tracks upstream `master` and adds one patch on top, for the
