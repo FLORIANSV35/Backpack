@@ -29,6 +29,18 @@ project's own `config.h` instead of a same-named header from some
 third-party library that may be installed under Arduino IDE (no effect
 under PlatformIO).
 
+**New DIY target: `Rapidfire_ESP32C3_Backpack`.** The stock rapidFIRE
+backpack uses an ESP8266/ESP8285, whose WiFi SDK has no WiFi LR (long range)
+mode at all — it's not exposed by the NONOS SDK and isn't a hardware
+capability of that chip, unlike the ESP32 family. Driving the rapidFIRE from
+an ESP32-C3 instead lets this backpack join the rest of the ESP-NOW
+ecosystem (goggles, radio) in using LR. The bit-banged SPI protocol in
+`src/rapidfire.cpp` is plain Arduino `digitalWrite`/`pinMode`/
+`delayMicroseconds`, no ESP8266-specific register access, so it needed no
+code changes — only a new `targets/rapidfire.ini` environment with pins
+for the ESP32-C3: `PIN_MOSI=4`, `PIN_CLK=5`, `PIN_CS=6`, `PIN_LED=8`,
+`PIN_BUTTON=9` (adjust to taste/wiring).
+
 Scope: only `src/rapidfire.h`, `src/rapidfire.cpp`, `src/Vrx_main.cpp` and
 `src/module_base.cpp` are modified; nothing else in the repo differs from
 upstream. This target has no telemetry (GPS/battery/link), OSD,
