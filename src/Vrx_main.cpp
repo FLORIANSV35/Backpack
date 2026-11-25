@@ -299,6 +299,12 @@ void SetupEspNow()
         DBGLN("ESP-NOW failed to add peer");
         return;
       }
+      // Force the ESP-NOW-specific PHY rate to WiFi LR (long range), on top
+      // of WIFI_PROTOCOL_LR already being advertised for the interface.
+      // Every peer in the bind group must do the same -- LR uses a PHY the
+      // normal 11b/g/n rates can't decode, so a mismatched peer just can't
+      // hear this backpack at all, not merely "more slowly".
+      esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K);
     #endif
 
     esp_now_register_recv_cb(OnDataRecv);

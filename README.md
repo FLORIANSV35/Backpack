@@ -5,6 +5,26 @@
 [![Chat](https://img.shields.io/discord/596350022191415318)](http://discord.gg/dS6ReFY)
 [![Open Collective backers](https://img.shields.io/opencollective/backers/expresslrs?label=Open%20Collective%20backers)](https://opencollective.com/expresslrs)
 
+## About this branch (`graphn-hdz-bkpk-lr`)
+
+Branched from [graphn-hdz-bkpk](https://github.com/FLORIANSV35/Backpack/tree/graphn-hdz-bkpk),
+adding one change: ESP-NOW frames are forced to WiFi LR (long range) PHY via
+`esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K)` in
+`SetupEspNow()` (`src/Vrx_main.cpp`), on top of `WIFI_PROTOCOL_LR` already
+being advertised on the interface.
+
+**Every device in the bind group must run an `-lr` branch build for this to
+work** — LR is a different PHY modulation, not just a slower rate, so a
+normal-rate peer can't decode LR frames at all (and vice versa). This
+backpack will stop being able to talk to anything still on plain
+`graphn-hdz-bkpk`. Pairs with
+[graphn-rapidf-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-rapidf-bkpk-lr)
+and
+[graphn-radio-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-radio-bkpk-lr).
+
+WiFi LR requires ESP32-family hardware (ESP32, ESP32-C3, ...) — it does not
+exist on ESP8266/ESP8285 at all (no SDK API, no hardware support).
+
 ## About this branch (`graphn-hdz-bkpk`)
 
 This branch tracks upstream `master` and adds one change on top, specific to
