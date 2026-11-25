@@ -1,5 +1,28 @@
 # Timer Backpack for ESP32-C3 with Bluetooth (Arduino sketch)
 
+## About this branch (`timer-esp32c3-ble-lr`)
+
+Branched from [timer-esp32c3-ble](https://github.com/FLORIANSV35/Backpack/tree/timer-esp32c3-ble),
+adding one change: ESP-NOW frames are forced to WiFi LR (long range) PHY via
+`esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K)` in
+`SetSoftMACAddress()` (`TimerBackpack.cpp`), on top of `WIFI_PROTOCOL_LR`
+already being advertised on the interface. Re-applied on every rebind (not
+just once at boot), since `SetSoftMACAddress()` also runs from
+`adoptGroupAddress()`.
+
+**Every device in the bind group must run an `-lr` branch build for this to
+work** — LR is a different PHY modulation, not just a slower rate, so a
+normal-rate peer can't decode LR frames at all (and vice versa). Pairs with
+[graphn-hdz-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-hdz-bkpk-lr),
+[graphn-rapidf-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-rapidf-bkpk-lr)
+and
+[graphn-radio-bkpk-lr](https://github.com/FLORIANSV35/Backpack/tree/graphn-radio-bkpk-lr).
+
+Unlike the other three `-lr` branches, this one has no runtime web UI toggle
+(this sketch has no AsyncWebServer/config page — it's BLE/USB-MSP only), so
+LR is hardcoded on here; use the plain `timer-esp32c3-ble` branch instead if
+you need to bind a non-LR device.
+
 A standalone Arduino sketch (not a PlatformIO environment of this repository),
 adapted from this project's `src/Timer_main.cpp`, for an **ESP32-C3** board.
 It is the timer backpack of the [Drone Scan Tool](https://github.com/FLORIANSV35/Drone-Scan-Tool)

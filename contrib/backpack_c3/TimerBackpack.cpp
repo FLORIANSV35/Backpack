@@ -201,6 +201,13 @@ static void SetSoftMACAddress() {
   WiFi.setTxPower(WIFI_POWER_19_5dBm);
   esp_wifi_set_mac(WIFI_IF_STA, groupAddress);
   esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N | WIFI_PROTOCOL_LR);
+  // Force the ESP-NOW-specific PHY rate to WiFi LR (long range), matching the
+  // rest of the bind group (goggles, radio, rapidFIRE -lr branches). This is
+  // a different modulation, not just a slower rate, so every peer must run
+  // an -lr build or they simply can't decode each other's frames. Re-applied
+  // here (not just once in backpackSetup()) so a rebind via adoptGroupAddress
+  // keeps it in effect.
+  esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K);
 }
 
 static void registerPeer(const uint8_t *address) {
