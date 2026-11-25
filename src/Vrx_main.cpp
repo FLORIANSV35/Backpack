@@ -334,8 +334,13 @@ void SetSoftMACAddress()
   // Soft-set the MAC address to the passphrase UID for binding
   #if defined(PLATFORM_ESP8266)
     wifi_set_macaddr(STATION_IF, firmwareOptions.uid);
+    wifi_set_sleep_type(NONE_SLEEP_T);
   #elif defined(PLATFORM_ESP32)
     esp_wifi_set_mac(WIFI_IF_STA, firmwareOptions.uid);
+    // Keep the radio awake between ESP-NOW frames: modem-sleep power saving
+    // delays RX and can defer/drop outgoing frames, hurting ESP-NOW range
+    // and responsiveness for no power benefit on a mains/battery-backed VRX.
+    esp_wifi_set_ps(WIFI_PS_NONE);
   #endif
 }
 

@@ -22,7 +22,14 @@ the HDZero goggles VRX backpack:
   the goggles send no response to 0x0301, the sender doesn't receive its own
   ESP-NOW broadcast, and receivers dedupe an unchanged channel.
 
-See `src/module_base.cpp` for the implementation.
+- **Disable WiFi power-save on the ESP-NOW radio.** The backpack never
+  called `esp_wifi_set_ps()`, so the ESP32 could modem-sleep between ESP-NOW
+  frames, delaying RX and deferring outgoing sends. Power save is now
+  explicitly turned off (`WIFI_PS_NONE`) for lower ESP-NOW latency and fewer
+  missed frames. No over-the-air protocol change, so it doesn't affect
+  compatibility with other bind-group members.
+
+See `src/module_base.cpp` and `src/Vrx_main.cpp` for the implementation.
 
 **Build scope:** `platformio.ini` only includes `targets/hdzero.ini` on this
 branch, so `pio run` builds/lists just the HDZero VRX environments. Other
