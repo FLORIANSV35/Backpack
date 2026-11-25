@@ -8,7 +8,7 @@
 #define TIMER_BACKPACK_CONFIG_MAGIC (0b11U << 30)
 
 #define TX_BACKPACK_CONFIG_VERSION      4
-#define VRX_BACKPACK_CONFIG_VERSION     5
+#define VRX_BACKPACK_CONFIG_VERSION     6
 #define TIMER_BACKPACK_CONFIG_VERSION   3
 
 
@@ -87,6 +87,7 @@ typedef struct {
     char        ssid[33];
     char        password[65];
     uint8_t     address[6];
+    bool        espnowLR; // force the ESP-NOW PHY rate to WiFi LR (long range)
 #if defined(HAS_HEADTRACKING)
     int         compassCalibration[3][2];
     float       imuCalibration[3];
@@ -128,12 +129,14 @@ public:
     char    *GetSSID() { return m_config.ssid; }
     char    *GetPassword() { return m_config.password; }
     uint8_t *GetGroupAddress() { return m_config.address; }
+    bool     GetEspnowLR() { return m_config.espnowLR; }
 
     // Setters
     void SetStorageProvider(ELRS_EEPROM *eeprom);
     void SetDefaults();
     void SetBootCount(uint8_t count);
     void SetStartWiFiOnBoot(bool startWifi);
+    void SetEspnowLR(bool lr);
     void SetSSID(const char *ssid);
     void SetPassword(const char *ssid);
     void SetGroupAddress(const uint8_t address[6]);

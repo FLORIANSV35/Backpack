@@ -317,8 +317,13 @@ void SetupEspNow()
       // of WIFI_PROTOCOL_LR already being advertised for the interface.
       // Every peer in the bind group must do the same -- LR uses a PHY the
       // normal 11b/g/n rates can't decode, so a mismatched peer just can't
-      // hear this backpack at all, not merely "more slowly".
-      esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K);
+      // hear this backpack at all, not merely "more slowly". Togglable from
+      // the web UI (config.SetEspnowLR), e.g. to temporarily drop back to
+      // normal rate to bind a backpack that isn't on an -lr build yet.
+      if (config.GetEspnowLR())
+      {
+        esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_LORA_500K);
+      }
     #endif
 
     esp_now_register_recv_cb(OnDataRecv);

@@ -173,6 +173,7 @@ VrxBackpackConfig::SetDefaults()
 {
     memset(&m_config, 0, sizeof(m_config));
     m_config.version = VRX_BACKPACK_CONFIG_VERSION | VRX_BACKPACK_CONFIG_MAGIC;
+    m_config.espnowLR = true; // this is the -lr branch, default to LR on
 
 #if defined(AAT_BACKPACK)
     m_config.aat.satelliteHomeMin = 5;
@@ -225,6 +226,13 @@ void
 VrxBackpackConfig::SetStartWiFiOnBoot(bool startWifi)
 {
     m_config.startWiFi = startWifi;
+    m_modified = true;
+}
+
+void
+VrxBackpackConfig::SetEspnowLR(bool lr)
+{
+    m_config.espnowLR = lr;
     m_modified = true;
 }
 

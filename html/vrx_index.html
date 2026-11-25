@@ -83,6 +83,23 @@
 						<br>
 						<a id="access" href="#" class="mui-btn mui-btn--primary">Disconnect</a>
 					</div>
+
+					<div id="espnowlrpanel" style="display:none;" class="mui-panel">
+						<h2>ESP-NOW Range</h2>
+						Force the ESP-NOW link to WiFi LR (long range) mode. <b>Every backpack in the
+						bind group must have this enabled too</b> &mdash; LR uses a different PHY a
+						normal-rate peer can't decode at all, not just "more slowly". Requires a restart
+						to take effect.
+						<form action="/setespnowlr" id="setespnowlr" method="POST" class="mui-form">
+							<div class="mui-checkbox">
+								<label>
+									<input id="espnow_lr" type="checkbox" name="lr">
+									Enable WiFi LR mode
+								</label>
+							</div>
+							<input type="submit" value="Save &amp; Restart" class="mui-btn mui-btn--primary">
+						</form>
+					</div>
 				</div>
 
 				<div class="mui-tabs__pane" id="pane-justified-3">

@@ -317,6 +317,9 @@ static void GetConfiguration(AsyncWebServerRequest *request)
 #if defined(AAT_BACKPACK)
   WebAatAppendConfig(json);
 #endif
+#if defined(TARGET_VRX_BACKPACK)
+  json["config"]["espnow-lr"] = config.GetEspnowLR();
+#endif
 
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   serializeJson(json, *response);
@@ -391,6 +394,18 @@ static void WebUpdateSetHome(AsyncWebServerRequest *request)
   }
   WebUpdateConnect(request);
 }
+
+#if defined(TARGET_VRX_BACKPACK)
+static void WebUpdateSetEspnowLR(AsyncWebServerRequest *request)
+{
+  bool lr = request->arg("lr") == "on";
+  DBGLN("Setting ESP-NOW LR mode to %d, restarting to apply", lr);
+  config.SetEspnowLR(lr);
+  config.Commit();
+  sendResponse(request, "ESP-NOW LR setting saved, restarting...");
+  rebootTime = millis() + 200;
+}
+#endif
 
 static void WebUpdateForget(AsyncWebServerRequest *request)
 {
@@ -745,6 +760,9 @@ static void startServices()
   server.on("/config", HTTP_GET, GetConfiguration);
   server.on("/networks.json", WebUpdateSendNetworks);
   server.on("/sethome", WebUpdateSetHome);
+  #if defined(TARGET_VRX_BACKPACK)
+  server.on("/setespnowlr", WebUpdateSetEspnowLR);
+  #endif
   #if defined(MAVLINK_ENABLED)
   server.on("/setmavlink", WebUpdateSetMavLink);
   #endif

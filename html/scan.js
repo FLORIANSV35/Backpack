@@ -133,6 +133,12 @@ function updateConfig(data) {
             _('connect').style.display = 'none';
         }
     }
+    if (config.hasOwnProperty('espnow-lr')) {
+        if (_('espnowlrpanel')) {
+            _('espnowlrpanel').style.display = 'block';
+            _('espnow_lr').checked = config['espnow-lr'] === true;
+        }
+    }
     if (config['head-tracking']) {
         if (_('httab')) _('httab').style.display = 'table-cell';
     }
@@ -511,6 +517,9 @@ _('access').addEventListener('click', callback("Access Point", "An error occurre
 _('forget').addEventListener('click', callback("Forget Home Network", "An error occurred forgetting the home network", "/forget", null));
 if (_('setrtc')) _('setrtc').addEventListener('submit', callback("Set RTC Time", "An error occurred setting the RTC time", "/setrtc", function() {
     return new FormData(_('setrtc'));
+}));
+if (_('setespnowlr')) _('setespnowlr').addEventListener('submit', callback("ESP-NOW LR Mode", "An error occurred saving the ESP-NOW LR setting", "/setespnowlr", function() {
+    return new FormData(_('setespnowlr'));
 }));
 
 //=========================================================
